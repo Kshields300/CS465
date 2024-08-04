@@ -14,6 +14,7 @@ export class TripDataService {
   url = 'http://localhost:3000/api/trips';
 
   getTrips(): Observable<Trip[]> {
+    //console.log(this.url);
     return this.http.get<Trip[]>(this.url);
   }
 
