@@ -55,78 +55,78 @@ const tripsFindByCode = async(req, res) => {
     }
 };
 
-//POST: /trips - Adds a new trip
-//Regardless of outcome, response must include HTML status code
-//and JSON message to the requesting client
-const tripsAddTrip = async(req, res) => {
-    const newTrip = new Trip({
-        code: req.body.code,
-        name: req.body.name,
-        length: req.body.length,
-        start: req.body.start,
-        resort: req.body.resort,
-        perPerson: req.body.perPerson,
-        image: req.body.image,
-        description: req.body.description
-    });
-
-    const q = await newTrip.save();
-
-        if(!q)
-        {   //Database returned no data
-            return res
-                .status(400)
-                .json(err);
-        }
-        else{
-            return res
-                .status(201)
-                .json(q);
-        }
-
-        //Uncomment the following line to show results of opertation on the console
-        console.log(q)      
-};
-
 //PUT: /trips/:tripCode - Updates a trip
 //Regardless of outcome, response must include HTML status code
 //and JSON message to the requesting client
 const tripsUpdateTrip = async(req, res) =>{
     //Uncomment for debugging
-    console.log(req.params);
-    console.log(req.body);
-
-    const q = await Model
-        .findOneAndUpdate(
-            {   'code': req.params.tripCode},
-            {
-                code: req.body.code,
-                name: req.body.name,
-                length: req.body.length,
-                start: req.body.start,
-                resort: req.body.resort,
-                perPerson: req.body.perPerson,
-                image: req.body.image,
-                description: req.body.description
+    //console.log(req.params);
+    //console.log(req.body);
+    await getUser(req, res, (req, res) =>{
+        try{
+            const q = Model.findOneAndUpdate(
+                {   code: req.params.tripCode},
+                {
+                    code: req.body.code,
+                    name: req.body.name,
+                    length: req.body.length,
+                    start: req.body.start,
+                    resort: req.body.resort,
+                    perPerson: req.body.perPerson,
+                    image: req.body.image,
+                    description: req.body.description
+                }
+            )
+            .exec();
+    
+            if(!q){
+                //Database returned no data
+                return res
+                    .status(400)
+                    .json(err);
             }
-        )
-        .exec();
+            else{
+                //Return resulting updated trip
+                return res
+                    .status(201)
+                    .json(q);
+            }
+        }
+        catch(error){
+            console.error("Error updating trip:", error);
+            return res.status(500).json({ error: "Internal server error"});
+        }
+    });
 
-        if(!q){
-            //Database returned no data
-            return res
-                .status(400)
-                .json(err);
-        }
-        else{
-            //Return resulting updated trip
-            return res
-                .status(201)
-                .json(q);
-        }
+
 
         //Uncomment the following to show results of operation on the console
-        console.log(q);
+        //console.log(q);
+};
+
+
+//POST: /trips - Adds a new trip
+//Regardless of outcome, response must include HTML status code
+//and JSON message to the requesting client
+const tripsAddTrip = async(req, res) => {
+    await getUser(req, res, (req, res) => {
+        const q = Model.create({
+            code: req.body.code,
+            name: req.body.name,
+            length: req.body.length,
+            start: req.body.start,
+            resort: req.body.resort,
+            perPerson: req.body.perPerson,
+            image: req.body.image,
+            description: req.body.description
+        })
+        .then((data) =>{
+            res.send(data);
+        })
+        .catch((err) => {
+            res.send(err);
+        });
+    });   
 };
 
 
