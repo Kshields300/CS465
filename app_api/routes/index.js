@@ -69,14 +69,14 @@ router
 router
     .route('/trips')
     .get(tripsController.tripsList)    //GET Method routes tripList
-    .post(tripsController.tripsAddTrip);    //POST Method Adds a trip
+    .post(authenticateJWT, tripsController.tripsAddTrip);    //POST Method Adds a trip
     //Removed JWTAuthentication function since this auth currently breaks the function
 
 //Get method routes tripsFindByCode - requires parameter
 router
     .route('/trips/:tripCode')
     .get(tripsController.tripsFindByCode)
-    .put(tripsController.tripsUpdateTrip);
+    .put(authenticateJWT, tripsController.tripsUpdateTrip);
     //Removed JWTAuthentication function since this auth currently breaks the function
 
 module.exports = router;
