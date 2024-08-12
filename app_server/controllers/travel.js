@@ -27,7 +27,7 @@ const travel = async function(req, res, next) {
             //console.log(json);
             //additional error conditions for empty response or array length 0
             let message = null;
-            if (!(jason instanceof Array)){
+            if (!(json instanceof Array)){
                 message = 'API lookup error';
                 json = [];
             }

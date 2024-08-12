@@ -72,6 +72,7 @@ export class TripDataService {
   }
 
   //Helper method to process both login and register methods
+  
   handleAuthAPICall (endpoint: string, user: User, passwd: string) :
   Observable<AuthResponse>{
     console.log('Inside TripDataService::handleAuthAPICall');
@@ -84,4 +85,17 @@ export class TripDataService {
     return this.http.post<AuthResponse>(this.baseUrl + '/' + endpoint,
       formData);
   }
+  
+  
+  //API Call listed in changelog, doesn't appear to be complete given error on returns upon change
+  /*
+  private async handleAuthAPICall(
+    urlPath: string,
+    user: User
+  ):
+  Promise<AuthResponse> {
+    const url: string = `${this.baseUrl}/${urlPath}`;
+    return (await lastValueFrom(this.http.post(url,user))) as AuthResponse;
+  }
+    */
 }

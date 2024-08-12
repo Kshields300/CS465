@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Trip = require('../models/travlr'); //register model
 const Model = mongoose.model('trips');
+const User = mongoose.model("users");
 
 //GET: /trips - lists all the trips
 //regardless of outcome, response must include HTML status code
@@ -52,6 +53,23 @@ const tripsFindByCode = async(req, res) => {
         return res
                 .status(200)
                 .json(q);
+    }
+};
+
+const getUser = async(req, res, callback) => {
+    if (req.auth && req.auth.email){
+        try{
+            console.log("getUser called");
+            const user = await User.findOne({email: req.auth.email}).exec();
+            if(!user){
+                return res.status(404).json({ message: "User not found1"});
+            }
+            callback(req,res,user.name);
+        }
+        catch(err){
+            console.log(err);
+            return res.status(404).json({ message: "User not found2"});
+        }
     }
 };
 

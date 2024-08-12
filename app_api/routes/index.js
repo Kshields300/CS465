@@ -1,7 +1,7 @@
 const express = require('express'); //Express app
 const router = express.Router();    //Router logic
 //Added by lab guide but conflicts with updated changes from step 9
-require('jsonwebtoken');//Enable JSON Web Tokens
+//const jwt = require('jsonwebtoken');
 
 //Added from text
 const {expressjwt:jwt} = require("express-jwt");
@@ -40,6 +40,7 @@ function authenticateJWT (req, res, next){
 
     console.log(process.env.JWT_SECRET);
     console.log(jwt.decode(token));
+    console.log("decode worked");
     const verified = jwt.verify(token, process.env.JWT_SECRET, (err,
         verified) =>{
             if(err){
@@ -47,7 +48,7 @@ function authenticateJWT (req, res, next){
             }
             req.auth = verified;    //Set auth param to the decoded object
         });
-        next(); //We need to continue or this will hang forever
+    next(); //We need to continue or this will hang forever
 }
 
 //This is where we import the controllers we will route
@@ -68,12 +69,14 @@ router
 router
     .route('/trips')
     .get(tripsController.tripsList)    //GET Method routes tripList
-    .post(authenticateJWT, tripsController.tripsAddTrip);    //POST Method Adds a trip
+    .post(tripsController.tripsAddTrip);    //POST Method Adds a trip
+    //Removed JWTAuthentication function since this auth currently breaks the function
 
 //Get method routes tripsFindByCode - requires parameter
 router
     .route('/trips/:tripCode')
     .get(tripsController.tripsFindByCode)
-    .put(authenticateJWT, tripsController.tripsUpdateTrip);
+    .put(tripsController.tripsUpdateTrip);
+    //Removed JWTAuthentication function since this auth currently breaks the function
 
 module.exports = router;

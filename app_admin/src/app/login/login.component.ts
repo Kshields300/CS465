@@ -16,7 +16,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 export class LoginComponent implements OnInit{
   public formError: string='';
 
-  credentials = {
+  public credentials = {
     name: '',
     email: '',
     password: ''
@@ -32,8 +32,7 @@ export class LoginComponent implements OnInit{
 
   public onLoginSubmit(): void{
     this.formError='';
-    if (!this.credentials.email || !this.credentials.password ||
-      !this.credentials.name){
+    if (!this.credentials.email || !this.credentials.password){
         this.formError = 'All fields are required, please try again';
     }
     else{
@@ -66,5 +65,16 @@ export class LoginComponent implements OnInit{
         }
       
   }
+
+    //Provided changed function from Step 25 of changelog
+  //Gives error that Property 'then' does not exist on type 'void'.ts(2339)
+  /*
+  private doLogin(): void{
+    this.authenticationService
+      .login(this.credentials, this.credentials.password)
+      .then(() => this.router.navigateByUrl('list-trips'))
+      .catch((message) => (this.formError = message));
+  }
+      */
 }
 
