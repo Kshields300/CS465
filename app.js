@@ -9,6 +9,7 @@ var logger = require('morgan');
 var handlebars = require('hbs');
 const passport = require("passport");
 
+
 //Bring in the database
 require('./app_api/models/db');
 //Initialize Passport
@@ -27,13 +28,11 @@ var apiRouter = require('./app_api/routes/index');
 
 var app = express();
 
-
 // view engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 
 //register handlebars partials (https://www.npmjs.com/package/hbs)
 handlebars.registerPartials(__dirname + '/app_server/views/partials');
-
 
 app.set('view engine', 'hbs');
 
@@ -43,6 +42,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
+
 
 //Enable CORS
 app.use('/api', (req, res, next) =>{

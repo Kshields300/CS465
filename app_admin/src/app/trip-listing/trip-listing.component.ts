@@ -63,7 +63,7 @@ export class TripListingComponent implements OnInit{
     this.getStuff();
   }
 
-  public isLoggedIn(){
+  public isLoggedIn(): boolean{
     return this.authenticationService.isLoggedIn();
   }
 }

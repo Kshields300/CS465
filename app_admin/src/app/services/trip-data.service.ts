@@ -18,12 +18,13 @@ export class TripDataService {
     private http: HttpClient,
     @Inject (BROWSER_STORAGE) private storage: Storage
   ) {}
-  url = 'http://localhost:3000/api/trips';
-  baseUrl = 'http://localhost:3000/api';
+  
+  private apiBaseUrl = 'http://localhost:3000/api/';
+  private tripUrl = `${this.apiBaseUrl}trips/`;
 
   getTrips(): Observable<Trip[]> {
-    console.log(this.url);
-    return this.http.get<Trip[]>(this.url);
+    console.log(this.tripUrl);
+    return this.http.get<Trip[]>(this.tripUrl);
   }
 
   addTrip(formData: Trip) : Observable<Trip[]> {
@@ -33,15 +34,15 @@ export class TripDataService {
       Authorization: `Bearer ${localStorage.getItem('travlr-token')}`,
     });
     console.log("headers complete, ready to return");
-    console.log(this.url);
-    console.log(formData);
-    console.log(headers);
-    return this.http.post<Trip[]>(this.url, formData, {headers: headers});
+    return this.http.post<Trip[]>(this.tripUrl, formData, {headers: headers});
   }
 
   getTrip(tripCode: string) : Observable<Trip[]> {
-    //console.log('Inside TripdataService::getTrips');
-    return this.http.get<Trip[]>(this.url + '/' + tripCode);
+    console.log('Inside TripdataService::getTrip');
+    console.log(this.tripUrl);
+    console.log(tripCode);
+    console.log(this.tripUrl + '/' + tripCode);
+    return this.http.get<Trip[]>(this.tripUrl + tripCode);
   }
 
   updateTrip(formData: Trip) : Observable<Trip> {
@@ -51,51 +52,31 @@ export class TripDataService {
       Authorization: `Bearer ${localStorage.getItem('travlr-token')}`,
     });
     console.log("headers complete, ready to return");
-    console.log(this.url);
-    console.log(formData);
-    console.log(headers);
-    return this.http.put<Trip>(this.url + '/' + formData.code, formData,{
-      headers: headers,
-    });
+    return this.http.put<Trip>(this.tripUrl + formData.code, formData,{
+      headers: headers});
   }
 
   //Call to our /login endpoint, returns JWT
-  login(user: User, passwd: string) : Observable<AuthResponse>{
+  login(user: User) : Promise<AuthResponse>{
     console.log('Inside TripDataService::Login');
-    return this.handleAuthAPICall('login', user, passwd);
+    return this.makeAuthAPICall('login', user);
   }
 
   //Call to our /register endpoint, creates user and returns JWT
-  register(user: User, passwd: string) : Observable<AuthResponse>{
+  register(user: User) : Promise<AuthResponse>{
     console.log('Inside TripDataService::register');
-    return this.handleAuthAPICall('register', user, passwd);
+    return this.makeAuthAPICall('register', user);
   }
 
   //Helper method to process both login and register methods
   
-  handleAuthAPICall (endpoint: string, user: User, passwd: string) :
-  Observable<AuthResponse>{
-    console.log('Inside TripDataService::handleAuthAPICall');
-    let formData = {
-      name: user.name,
-      email: user.email,
-      password:passwd
-    };
-
-    return this.http.post<AuthResponse>(this.baseUrl + '/' + endpoint,
-      formData);
-  }
-  
-  
-  //API Call listed in changelog, doesn't appear to be complete given error on returns upon change
-  /*
-  private async handleAuthAPICall(
+  private async makeAuthAPICall(
     urlPath: string,
     user: User
   ):
   Promise<AuthResponse> {
-    const url: string = `${this.baseUrl}/${urlPath}`;
+    const url: string = `${this.apiBaseUrl}/${urlPath}`;
     return (await lastValueFrom(this.http.post(url,user))) as AuthResponse;
   }
-    */
+
 }

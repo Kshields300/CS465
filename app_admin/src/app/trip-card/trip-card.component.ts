@@ -23,13 +23,14 @@ export class TripCardComponent implements OnInit {
   ngOnInit(): void {
     
   }
+
+  public isLoggedIn(): boolean{
+    return this.authenticationService.isLoggedIn();
+  }
+
   public editTrip( trip: Trip){
     localStorage.removeItem('tripCode');
     localStorage.setItem('tripCode', trip.code);
     this.router.navigate(['edit-trip']);
-  }
-
-  public isLoggedIn(){
-    return this.authenticationService.isLoggedIn();
   }
 }

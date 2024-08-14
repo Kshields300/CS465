@@ -32,15 +32,18 @@ userSchema.methods.validPassword = function(password){
 
 //Method to generate JWT for the current record
 userSchema.methods.generateJWT = function(){
+
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 7);
+
     return jwt.sign(
         {   //Payload for JSON web token
             _id: this._id,
             email: this.email,
             name: this.name,
+            exp: parseInt (expiry.getTime() / 1000, 10),
         },
-        process.env.JWT_SECRET, //SECRET stored in .env file
-        { expiresIn: '1h'});    //Token expires an hour from creation
+        process.env.JWT_SECRET); //SECRET stored in .env file 
 };
 
-const User = mongoose.model('users', userSchema);
-module.exports = User;
+mongoose.model('users', userSchema);

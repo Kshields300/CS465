@@ -78,8 +78,8 @@ const getUser = async(req, res, callback) => {
 //and JSON message to the requesting client
 const tripsUpdateTrip = async(req, res) =>{
     //Uncomment for debugging
-    //console.log(req.params);
-    //console.log(req.body);
+    console.log(req.params);
+    console.log(req.body);
     await getUser(req, res, (req, res) =>{
         try{
             const q = Model.findOneAndUpdate(
@@ -94,19 +94,18 @@ const tripsUpdateTrip = async(req, res) =>{
                     image: req.body.image,
                     description: req.body.description
                 }
-            )
-            .exec();
+            ).exec();
     
             if(!q){
                 //Database returned no data
                 return res
-                    .status(400)
-                    .json(err);
+                    .status(404)
+                    .json({ message: "Trip not found" });
             }
             else{
                 //Return resulting updated trip
                 return res
-                    .status(201)
+                    .status(200)
                     .json(q);
             }
         }
@@ -116,10 +115,6 @@ const tripsUpdateTrip = async(req, res) =>{
         }
     });
 
-
-
-        //Uncomment the following to show results of operation on the console
-        //console.log(q);
 };
 
 

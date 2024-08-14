@@ -32,6 +32,31 @@ export class AuthenticationService {
     this.storage.setItem('travlr-token', token);
   }
 
+  //Login method that leverages the login method in TripDataService
+  //Because that method returns an observable, we subscribe to the result
+  //and only process when the Observable condition is satisfied
+  //Uncomment the two console.log messages for additional debugging info
+  public login (user: User) : Promise<any> {
+    return this.tripDataService.login(user)
+    .then((authResp: AuthResponse) =>
+    this.saveToken(authResp.token));
+  }
+
+  //Register method that leverages the register method in
+  //tripDataService
+  //Because that method returns an observable, we subscribe to the
+  //result and only process when the observable condition is satisfied
+  //Uncomment the two console.log messages for additioanl debugging
+  //Please note: This method is nearly identifcal to the login method
+  //because the behavior of the API logs a new user in immediately
+  //upon registration
+  public register(user: User) : Promise<any> {
+    return this.tripDataService.register(user)
+    .then((authResp: AuthResponse) =>
+    this.saveToken(authResp.token));
+  }
+
+
   //Logout of our application and remove the JWT from Storage
   public logout(): void{
     this.storage.removeItem('travlr-token');
@@ -65,49 +90,5 @@ export class AuthenticationService {
     const email: string = '';
     const name: string = '';
     return {email, name} as User;
-  }
-
-  //Login method that leverages the login method in TripDataService
-  //Because that method returns an observable, we subscribe to the result
-  //and only process when the Observable condition is satisfied
-  //Uncomment the two console.log messages for additional debugging info
-  public login (user: User, passwd: string) : void{
-    this.tripDataService.login(user, passwd)
-    .subscribe({
-      next: (value: any) => {
-        if(value){
-          console.log(value);
-          this.authResp = value;
-          this.saveToken (this.authResp.token);
-        }
-      },
-      error: (error: any) => {
-        console.log ('Error: ' + error);
-      }
-    })
-  }
-
-  //Register method that leverages the register method in
-  //tripDataService
-  //Because that method returns an observable, we subscribe to the
-  //result and only process when the observable condition is satisfied
-  //Uncomment the two console.log messages for additioanl debugging
-  //Please note: This method is nearly identifcal to the login method
-  //because the behavior of the API logs a new user in immediately
-  //upon registration
-  public register(user: User, passwd: string) : void{
-    this.tripDataService.register(user, passwd)
-    .subscribe({
-      next: (value: any) => {
-        if(value){
-          console.log(value);
-          this.authResp = value;
-          this.saveToken(this.authResp.token);
-        }
-      },
-      error: (error: any) => {
-        console.log('Error: ' + error);
-      }
-    })
   }
 }

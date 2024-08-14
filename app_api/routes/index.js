@@ -7,8 +7,8 @@ const router = express.Router();    //Router logic
 const {expressjwt:jwt} = require("express-jwt");
 const auth = jwt({
     secret: process.env.JWT_SECRET,
-    userProperty: 'payload',
-    algorithms: ['HS256']
+    userProperty: "payload",
+    algorithms: ["HS256"],
 });
 
 //Method to authenticate our JWT
@@ -69,14 +69,14 @@ router
 router
     .route('/trips')
     .get(tripsController.tripsList)    //GET Method routes tripList
-    .post(authenticateJWT, tripsController.tripsAddTrip);    //POST Method Adds a trip
+    .post(auth, tripsController.tripsAddTrip);    //POST Method Adds a trip
     //Removed JWTAuthentication function since this auth currently breaks the function
 
 //Get method routes tripsFindByCode - requires parameter
 router
     .route('/trips/:tripCode')
     .get(tripsController.tripsFindByCode)
-    .put(authenticateJWT, tripsController.tripsUpdateTrip);
+    .put(auth, tripsController.tripsUpdateTrip);
     //Removed JWTAuthentication function since this auth currently breaks the function
 
 module.exports = router;
